@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import ContactForm from './components/ContactForm';
 import ContactList from './components/ContactList';
 import Filter from './components/Filter';
-import styles from './App.css';
 import { MyPhonebook, Header, SecondHeader } from './App.styled';
 import { nanoid } from 'nanoid';
 import { ToastContainer, toast } from 'react-toastify';
