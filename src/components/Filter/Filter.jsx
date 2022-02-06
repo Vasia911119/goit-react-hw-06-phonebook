@@ -1,8 +1,15 @@
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { changeFilter } from '../../redux/actions';
 import { FindForm, Title, Label, LabelTitle, Input } from './Filter.styled';
-import propTypes from "prop-types";
 
-const Filter = ({ value, onChange }) => {
+const Filter = () => {
+  const dispatch = useDispatch();
+  const filter = useSelector(state => state.filter)
+  const getVisibleContacts = event => {
+    dispatch(changeFilter(event.target.value));
+  };
+
   return (
     <FindForm>
       <Title>Find contacts:</Title>
@@ -10,19 +17,14 @@ const Filter = ({ value, onChange }) => {
         <LabelTitle>find:</LabelTitle>
         <Input
           type="text"
-          onChange={onChange}
-          value={value}
+          onChange={getVisibleContacts}
+          value={filter}
           name="filter"
           placeholder="Find name"
         />
       </Label>
     </FindForm>
   );
-};
-
-Filter.propTypes = {
-  value: propTypes.string,
-  onChange: propTypes.func,
 };
 
 export default Filter;

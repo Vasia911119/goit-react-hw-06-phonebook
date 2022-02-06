@@ -1,10 +1,15 @@
 import{ useState } from 'react';
 import { ContactsForm, Title, Label, LabelTitle, Input, Button } from './ContactForm.styled';
-import propTypes from "prop-types";
+import { useDispatch, useSelector } from 'react-redux';
+import { addContact } from '../../redux/actions';
+import { nanoid } from 'nanoid';
+import { ToastContainer, toast } from 'react-toastify';
 
-const ContactForm = ({onSubmit}) => {
+const ContactForm = () => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
+  const dispatch = useDispatch();
+  const items = useSelector(state => state.items); 
 
   const changeInput = evt => {
     const { name, value } = evt.target;
@@ -15,22 +20,30 @@ const ContactForm = ({onSubmit}) => {
       if (name === "number") {
         setNumber(value);
       };
-    
-    // switch (name) {
-    //   case 'name':
-    //       setName(value);
-    //       break;
-    //   case 'number':
-    //       setNumber(value);
-    //       break;
-    //   default:
-    //       return;
-    // }
   };
 
   const handleSubmit = evt => {
     evt.preventDefault();
-    onSubmit({name, number});
+    if (checkExistContact(name)) {
+      toast.error('Name is already exists !');
+      reset();
+      return;
+    }
+    dispatch(addContact({ id: nanoid(5), name, number }));
+    reset();
+  };
+
+  const checkExistContact = name => {
+    const result = items.some(
+      item => item.name.toLowerCase() === name.toLowerCase(),
+    );
+
+    if (result) {
+      return 1;
+    }
+  };
+
+  const reset = () => {
     setName('');
     setNumber('');
   };
@@ -64,12 +77,13 @@ const ContactForm = ({onSubmit}) => {
       <Button type="submit">
         Add
       </Button>
+      <ToastContainer
+          autoClose={3000}
+          position="top-center"
+          theme="colored"
+        />
     </ContactsForm>
   );
 }
-
-ContactForm.propTypes = {
-  onSubmit: propTypes.func,
-};
 
 export default ContactForm;
